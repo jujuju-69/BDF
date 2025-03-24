@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Badminton Head to Head</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.2)), url(img/bgimage.jpg);
+            background-size: cover;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        
+        .comparison-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        
+        .player {
+            text-align: center;
+            width: 40%;
+        }
+        
+        .player-image {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        .player-name {
+            margin-top: 15px;
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+        
+        .player-country {
+            color: #7f8c8d;
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        
+        .vs {
+            font-size: 30px;
+            font-weight: bold;
+            color: #e74c3c;
+            width: 20%;
+            text-align: center;
+        }
+        
+        .stats-container {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .stats-title {
+            text-align: center;
+            font-size: 20px;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .stat-item {
+            background-color: white;
+            border-radius: 5px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #3498db;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+        
+        .win-loss-chart {
+            width: 100%;
+            height: 20px;
+            background-color: #ecf0f1;
+            border-radius: 10px;
+            margin-top: 30px;
+            overflow: hidden;
+        }
+        
+        .win-loss-bar {
+            height: 100%;
+            display: flex;
+        }
+        
+        .wins {
+            background-color: #2ecc71;
+        }
+        
+        .losses {
+            background-color: #e74c3c;
+        }
+        
+        .chart-legend {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin: 0 15px;
+        }
+        
+        .legend-color {
+            width: 15px;
+            height: 15px;
+            border-radius: 3px;
+            margin-right: 5px;
+        }
+        
+        .search-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 30px;
+            gap: 15px;
+        }
+        
+        select {
+            padding: 10px 15px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+            font-size: 16px;
+            min-width: 200px;
+        }
+        
+        button {
+            padding: 10px 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        @media (max-width: 768px) {
+            .comparison-container {
+                flex-direction: column;
+            }
+            
+            .player {
+                width: 100%;
+                margin-bottom: 20px;
+            }
+            
+            .vs {
+                margin: 20px 0;
+                width: 100%;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>BADMINTON HEAD TO HEAD</h1>
+        
+        <div class="search-container">
+            <select id="player1-select">
+                <option value="">Select Player 1</option>
+                <!-- Players will be added by JavaScript -->
+            </select>
+            
+            <select id="player2-select">
+                <option value="">Select Player 2</option>
+                <!-- Players will be added by JavaScript -->
+            </select>
+            
+            <button id="compare-btn">Compare</button>
+        </div>
+        
+        <div class="comparison-container">
+            <div class="player" id="player1">
+                <img src="https://via.placeholder.com/200" alt="Player 1" class="player-image" id="player1-image">
+                <div class="player-name" id="player1-name">Player 1</div>
+                <div class="player-country" id="player1-country">Country</div>
+            </div>
+            
+            <div class="vs">VS</div>
+            
+            <div class="player" id="player2">
+                <img src="https://via.placeholder.com/200" alt="Player 2" class="player-image" id="player2-image">
+                <div class="player-name" id="player2-name">Player 2</div>
+                <div class="player-country" id="player2-country">Country</div>
+            </div>
+        </div>
+        
+        <div class="stats-container">
+            <div class="stats-title">HEAD TO HEAD STATISTICS</div>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-value" id="total-matches">0</div>
+                    <div class="stat-label">Total Matches</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="player1-wins">0</div>
+                    <div class="stat-label" id="player1-wins-label">Player 1 Wins</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="player2-wins">0</div>
+                    <div class="stat-label" id="player2-wins-label">Player 2 Wins</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="last-meeting">-</div>
+                    <div class="stat-label">Last Meeting</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="longest-win-streak">0</div>
+                    <div class="stat-label">Longest Win Streak</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-value" id="tournament-meetings">0</div>
+                    <div class="stat-label">Tournament Meetings</div>
+                </div>
+            </div>
+            
+            <div class="win-loss-chart">
+                <div class="win-loss-bar" id="win-loss-bar">
+                    <div class="wins" id="player1-wins-bar" style="width: 0%"></div>
+                    <div class="losses" id="player2-wins-bar" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <div class="chart-legend">
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #2ecc71;"></div>
+                    <span id="player1-legend">Player 1 Wins</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color" style="background-color: #e74c3c;"></div>
+                    <span id="player2-legend">Player 2 Wins</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample player data
+        const players = [
+            {
+                id: 1,
+                name: "Heker Jr",
+                country: "Mexico",
+                image: "img/player1.jpeg"
+            },
+            {
+                id: 2,
+                name: "Zhang Qaid",
+                country: "China",
+                image: "img/player2.jpeg"
+            },
+            {
+                id: 3,
+                name: "Daus",
+                country: "Malaysia",
+                image: "img/player3.jpeg"
+            },
+            {
+                id: 4,
+                name: "Aqiffmbappe",
+                country: "Denmark",
+                image: "img/player4.jpeg"
+            },
+            {
+                id: 5,
+                name: "Ilham Puss",
+                country: "Korea",
+                image: "img/player5.jpeg"
+            },
+            {
+                id: 6,
+                name: "Waqi Suki",
+                country: "Thailand",
+                image: "img/player6.jpeg"
+            },
+            {
+                id: 7,
+                name: "Syakir Zuss",
+                country: "Japan",
+                image: "img/player7.jpeg"
+            },
+            {
+                id: 8,
+                name: "Cemm",
+                country: "Switzerland",
+                image: "img/player8.jpeg"
+            },
+            {
+                id: 9,
+                name: "Rayyan the King",
+                country: "Korea",
+                image: "https://img.olympicchannel.com/images/image/private/t_s_pog_staticContent_hero_xl/f_auto/primary/qwqjz0jubiq8pz9hxq8i"
+            }
+        ];
+
+        // Sample head-to-head data
+        const headToHeadData = {
+            "1-2": { // Axelsen vs Momota
+                totalMatches: 11,
+                player1Wins: 1,
+                player2Wins: 10,
+                lastMeeting: "2025-03-22",
+                longestWinStreak: 1,
+                tournamentMeetings: 11
+            },
+            "1-3": { // Axelsen vs Lee
+                totalMatches: 1,
+                player1Wins: 0,
+                player2Wins: 1,
+                lastMeeting: "2025-03-22",
+                longestWinStreak: 0,
+                tournamentMeetings: 1
+            },
+            "1-4": { // Axelsen vs Ginting
+                totalMatches: 2,
+                player1Wins: 1,
+                player2Wins: 1,
+                lastMeeting: "2025-03-22",
+                longestWinStreak: 1,
+                tournamentMeetings: 2
+            },
+            "1-5": { // Axelsen vs Chen
+                totalMatches: 1,
+                player1Wins: 0,
+                player2Wins: 1,
+                lastMeeting: "2025-03-22",
+                longestWinStreak: 0,
+                tournamentMeetings: 1
+            },
+            "1-6": { // Axelsen vs Chen
+                totalMatches: 0,
+                player1Wins: 0,
+                player2Wins: 0,
+                lastMeeting: "2025-03-22",
+                longestWinStreak: 0,
+                tournamentMeetings: 0
+            },
+            "1-7": { // Axelsen vs Chen
+                totalMatches: 2,
+                player1Wins: 1,
+                player2Wins: 1,
+                lastMeeting: "2025-03-22",
+                longestWinStreak: 1,
+                tournamentMeetings: 2
+            },
+            "1-8": { // Axelsen vs Chen
+                totalMatches: 0,
+                player1Wins: 0,
+                player2Wins: 0,
+                lastMeeting: "2025-03-22",
+                longestWinStreak: 0,
+                tournamentMeetings: 0
+            },
+            "2-1": { // Axelsen vs Chen
+                totalMatches: 18,
+                player1Wins: 10,
+                player2Wins: 8,
+                lastMeeting: "2021-08-01",
+                longestWinStreak: 4,
+                tournamentMeetings: 15
+            },
+            "2-3": { // Momota vs Lee
+                totalMatches: 9,
+                player1Wins: 6,
+                player2Wins: 3,
+                lastMeeting: "2022-11-05",
+                longestWinStreak: 4,
+                tournamentMeetings: 7
+            },
+            "2-4": { // Momota vs Ginting
+                totalMatches: 11,
+                player1Wins: 7,
+                player2Wins: 4,
+                lastMeeting: "2022-09-18",
+                longestWinStreak: 3,
+                tournamentMeetings: 9
+            },
+            "2-5": { // Momota vs Chen
+                totalMatches: 14,
+                player1Wins: 9,
+                player2Wins: 5,
+                lastMeeting: "2020-03-15",
+                longestWinStreak: 5,
+                tournamentMeetings: 12
+            },
+            "2-6": { // Momota vs Chen
+                totalMatches: 14,
+                player1Wins: 9,
+                player2Wins: 5,
+                lastMeeting: "2020-03-15",
+                longestWinStreak: 5,
+                tournamentMeetings: 12
+            },
+            "2-7": { // Momota vs Chen
+                totalMatches: 14,
+                player1Wins: 9,
+                player2Wins: 5,
+                lastMeeting: "2020-03-15",
+                longestWinStreak: 5,
+                tournamentMeetings: 12
+            },
+            "2-8": { // Momota vs Chen
+                totalMatches: 14,
+                player1Wins: 9,
+                player2Wins: 5,
+                lastMeeting: "2020-03-15",
+                longestWinStreak: 5,
+                tournamentMeetings: 12
+            },
+            "3-1": { // Lee vs Chen
+                totalMatches: 6,
+                player1Wins: 2,
+                player2Wins: 4,
+                lastMeeting: "2021-12-12",
+                longestWinStreak: 3,
+                tournamentMeetings: 5
+            },
+           "3-2": { // Momota vs Chen
+                totalMatches: 14,
+                player1Wins: 9,
+                player2Wins: 5,
+                lastMeeting: "2020-03-15",
+                longestWinStreak: 5,
+                tournamentMeetings: 12
+            },
+            "3-4": { // Lee vs Ginting
+                totalMatches: 8,
+                player1Wins: 5,
+                player2Wins: 3,
+                lastMeeting: "2023-03-10",
+                longestWinStreak: 2,
+                tournamentMeetings: 6
+            },
+            "3-5": { // Lee vs Chen
+                totalMatches: 6,
+                player1Wins: 2,
+                player2Wins: 4,
+                lastMeeting: "2021-12-12",
+                longestWinStreak: 3,
+                tournamentMeetings: 5
+            },
+            "3-6": { // Momota vs Chen
+                totalMatches: 14,
+                player1Wins: 9,
+                player2Wins: 5,
+                lastMeeting: "2020-03-15",
+                longestWinStreak: 5,
+                tournamentMeetings: 12
+            },
+            "3-7": { // Momota vs Chen
+                totalMatches: 14,
+                player1Wins: 9,
+                player2Wins: 5,
+                lastMeeting: "2020-03-15",
+                longestWinStreak: 5,
+                tournamentMeetings: 12
+            },
+            "3-8": { // Momota vs Chen
+                totalMatches: 14,
+                player1Wins: 9,
+                player2Wins: 5,
+                lastMeeting: "2020-03-15",
+                longestWinStreak: 5,
+                tournamentMeetings: 12
+            },
+            "4-1": { // Momota vs Chen
+                totalMatches: 14,
+                player1Wins: 9,
+                player2Wins: 5,
+                lastMeeting: "2020-03-15",
+                longestWinStreak: 5,
+                tournamentMeetings: 12
+            },
+            "4-2": { // Momota vs Chen
+                totalMatches: 14,
+                player1Wins: 9,
+                player2Wins: 5,
+                lastMeeting: "2020-03-15",
+                longestWinStreak: 5,
+                tournamentMeetings: 12
+            },
+            "4-3": { // Momota vs Chen
+                totalMatches: 14,
+                player1Wins: 9,
+                player2Wins: 5,
+                lastMeeting: "2020-03-15",
+                longestWinStreak: 5,
+                tournamentMeetings: 12
+            },
+            "4-5": { // Momota vs Chen
+                totalMatches: 14,
+                player1Wins: 9,
+                player2Wins: 5,
+                lastMeeting: "2020-03-15",
+                longestWinStreak: 5,
+                tournamentMeetings: 12
+            },
+            "4-6": { // Momota vs Chen
+                totalMatches: 14,
+                player1Wins: 9,
+                player2Wins: 5,
+                lastMeeting: "2020-03-15",
+                longestWinStreak: 5,
+                tournamentMeetings: 12
+            },
+            "4-7": { // Momota vs Chen
+                totalMatches: 14,
+                player1Wins: 9,
+                player2Wins: 5,
+                lastMeeting: "2020-03-15",
+                longestWinStreak: 5,
+                tournamentMeetings: 12
+            },
+            "4-8": { // Momota vs Chen
+                totalMatches: 14,
+                player1Wins: 9,
+                player2Wins: 5,
+                lastMeeting: "2020-03-15",
+                longestWinStreak: 5,
+                tournamentMeetings: 12
+            },
+            "5-1": { // Momota vs Chen
+                totalMatches: 14,
+                player1Wins: 9,
+                player2Wins: 5,
+                lastMeeting: "2020-03-15",
+                longestWinStreak: 5,
+                tournamentMeetings: 12
+            },
+            "5-2": { // Momota vs Chen
+                totalMatches: 14,
+                player1Wins: 9,
+                player2Wins: 5,
+                lastMeeting: "2020-03-15",
+                longestWinStreak: 5,
+                tournamentMeetings: 12
+            },
+            "5-3": { // Momota vs Chen
+                totalMatches: 14,
+                player1Wins: 9,
+                player2Wins: 5,
+                lastMeeting: "2020-03-15",
+                longestWinStreak: 5,
+                tournamentMeetings: 12
+            },
+            "5-4": { // Momota vs Chen
+                totalMatches: 14,
+                player1Wins: 9,
+                player2Wins: 5,
+                lastMeeting: "2020-03-15",
+                longestWinStreak: 5,
+                tournamentMeetings: 12
+            },
+            "5-6": { // Momota vs Chen
+                totalMatches: 14,
+                player1Wins: 9,
+                player2Wins: 5,
+                lastMeeting: "2020-03-15",
+                longestWinStreak: 5,
+                tournamentMeetings: 12
+            },
+            "5-7": { // Momota vs Chen
+                totalMatches: 14,
+                player1Wins: 9,
+                player2Wins: 5,
+                lastMeeting: "2020-03-15",
+                longestWinStreak: 5,
+                tournamentMeetings: 12
+            },
+            "5-8": { // Momota vs Chen
+                totalMatches: 14,
+                player1Wins: 9,
+                player2Wins: 5,
+                lastMeeting: "2020-03-15",
+                longestWinStreak: 5,
+                tournamentMeetings: 12
+            },
+            "6-1": { // Momota vs Chen
+                totalMatches: 14,
+                player1Wins: 9,
+                player2Wins: 5,
+                lastMeeting: "2020-03-15",
+                longestWinStreak: 5,
+                tournamentMeetings: 12
+            },
+            "6-2": { // Momota vs Chen
+                totalMatches: 14,
+                player1Wins: 9,
+                player2Wins: 5,
+                lastMeeting: "2020-03-15",
+                longestWinStreak: 5,
+                tournamentMeetings: 12
+            },
+            "6-3": { // Momota vs Chen
+                totalMatches: 14,
+                player1Wins: 9,
+                player2Wins: 5,
+                lastMeeting: "2020-03-15",
+                longestWinStreak: 5,
+                tournamentMeetings: 12
+            },
+            "6-4": { // Momota vs Chen
+                totalMatches: 14,
+                player1Wins: 9,
+                player2Wins: 5,
+                lastMeeting: "2020-03-15",
+                longestWinStreak: 5,
+                tournamentMeetings: 12
+            },
+            "6-5": { // Momota vs Chen
+                totalMatches: 14,
+                player1Wins: 9,
+                player2Wins: 5,
+                lastMeeting: "2020-03-15",
+                longestWinStreak: 5,
+                tournamentMeetings: 12
+            },
+            "6-7": { // Momota vs Chen
+                totalMatches: 14,
+                player1Wins: 9,
+                player2Wins: 5,
+                lastMeeting: "2020-03-15",
+                longestWinStreak: 5,
+                tournamentMeetings: 12
+            },
+            "6-8": { // Momota vs Chen
+                totalMatches: 3,
+                player1Wins: 3,
+                player2Wins: 0,
+                lastMeeting: "2025-03-22",
+                longestWinStreak: 3,
+                tournamentMeetings: 3
+            },
+            "7-1": { // Momota vs Chen
+                totalMatches: 14,
+                player1Wins: 9,
+                player2Wins: 5,
+                lastMeeting: "2020-03-15",
+                longestWinStreak: 5,
+                tournamentMeetings: 12
+            },
+            "7-2": { // Momota vs Chen
+                totalMatches: 14,
+                player1Wins: 9,
+                player2Wins: 5,
+                lastMeeting: "2020-03-15",
+                longestWinStreak: 5,
+                tournamentMeetings: 12
+            },
+            "7-3": { // Momota vs Chen
+                totalMatches: 14,
+                player1Wins: 9,
+                player2Wins: 5,
+                lastMeeting: "2020-03-15",
+                longestWinStreak: 5,
+                tournamentMeetings: 12
+            },
+            "7-4": { // Momota vs Chen
+                totalMatches: 14,
+                player1Wins: 9,
+                player2Wins: 5,
+                lastMeeting: "2020-03-15",
+                longestWinStreak: 5,
+                tournamentMeetings: 12
+            },
+            "7-5": { // Momota vs Chen
+                totalMatches: 14,
+                player1Wins: 9,
+                player2Wins: 5,
+                lastMeeting: "2020-03-15",
+                longestWinStreak: 5,
+                tournamentMeetings: 12
+            },
+            "7-6": { // Momota vs Chen
+                totalMatches: 14,
+                player1Wins: 9,
+                player2Wins: 5,
+                lastMeeting: "2020-03-15",
+                longestWinStreak: 5,
+                tournamentMeetings: 12
+            },
+            "7-8": { // Momota vs Chen
+                totalMatches: 14,
+                player1Wins: 9,
+                player2Wins: 5,
+                lastMeeting: "2020-03-15",
+                longestWinStreak: 5,
+                tournamentMeetings: 12
+            },
+            "8-1": { // Momota vs Chen
+                totalMatches: 14,
+                player1Wins: 9,
+                player2Wins: 5,
+                lastMeeting: "2020-03-15",
+                longestWinStreak: 5,
+                tournamentMeetings: 12
+            },
+            "8-2": { // Momota vs Chen
+                totalMatches: 14,
+                player1Wins: 9,
+                player2Wins: 5,
+                lastMeeting: "2020-03-15",
+                longestWinStreak: 5,
+                tournamentMeetings: 12
+            },
+            "8-3": { // Momota vs Chen
+                totalMatches: 14,
+                player1Wins: 9,
+                player2Wins: 5,
+                lastMeeting: "2020-03-15",
+                longestWinStreak: 5,
+                tournamentMeetings: 12
+            },
+            "8-4": { // Momota vs Chen
+                totalMatches: 14,
+                player1Wins: 9,
+                player2Wins: 5,
+                lastMeeting: "2020-03-15",
+                longestWinStreak: 5,
+                tournamentMeetings: 12
+            },
+            "8-5": { // Momota vs Chen
+                totalMatches: 14,
+                player1Wins: 9,
+                player2Wins: 5,
+                lastMeeting: "2020-03-15",
+                longestWinStreak: 5,
+                tournamentMeetings: 12
+            },
+            "8-6": { // Momota vs Chen
+                totalMatches: 3,
+                player1Wins: 0,
+                player2Wins: 3,
+                lastMeeting: "2025-03-22",
+                longestWinStreak: 0,
+                tournamentMeetings: 3
+            },
+            "8-7": { // Ginting vs Chen
+                totalMatches: 10,
+                player1Wins: 3,
+                player2Wins: 7,
+                lastMeeting: "2022-05-22",
+                longestWinStreak: 4,
+                tournamentMeetings: 8
+            }
+        };
+
+        // Populate player dropdowns
+        const player1Select = document.getElementById('player1-select');
+        const player2Select = document.getElementById('player2-select');
+
+        players.forEach(player => {
+            const option1 = document.createElement('option');
+            option1.value = player.id;
+            option1.textContent = player.name;
+            player1Select.appendChild(option1);
+
+            const option2 = document.createElement('option');
+            option2.value = player.id;
+            option2.textContent = player.name;
+            player2Select.appendChild(option2);
+        });
+
+        // Compare button click handler
+        document.getElementById('compare-btn').addEventListener('click', () => {
+            const player1Id = player1Select.value;
+            const player2Id = player2Select.value;
+
+            if (!player1Id || !player2Id) {
+                alert('Please select both players');
+                return;
+            }
+
+            if (player1Id === player2Id) {
+                alert('Please select two different players');
+                return;
+            }
+
+            comparePlayers(player1Id, player2Id);
+        });
+
+        // Function to compare two players
+        function comparePlayers(player1Id, player2Id) {
+            // Get player data
+            const player1 = players.find(p => p.id == player1Id);
+            const player2 = players.find(p => p.id == player2Id);
+
+            // Update player info
+            document.getElementById('player1-image').src = player1.image;
+            document.getElementById('player1-name').textContent = player1.name;
+            document.getElementById('player1-country').textContent = player1.country;
+
+            document.getElementById('player2-image').src = player2.image;
+            document.getElementById('player2-name').textContent = player2.name;
+            document.getElementById('player2-country').textContent = player2.country;
+
+            // Get head-to-head data (check both possible key orders)
+            const key1 = `${player1Id}-${player2Id}`;
+            const key2 = `${player2Id}-${player1Id}`;
+            
+            let h2hData = headToHeadData[key1] || headToHeadData[key2];
+            
+            if (!h2hData) {
+                // If no data exists for this pair, show zeros
+                h2hData = {
+                    totalMatches: 0,
+                    player1Wins: 0,
+                    player2Wins: 0,
+                    lastMeeting: "-",
+                    longestWinStreak: 0,
+                    tournamentMeetings: 0
+                };
+            } else if (headToHeadData[key2]) {
+                // If the data is stored in reverse order, swap the wins
+                const temp = h2hData.player1Wins;
+                h2hData.player1Wins = h2hData.player2Wins;
+                h2hData.player2Wins = temp;
+            }
+
+            // Update stats
+            document.getElementById('total-matches').textContent = h2hData.totalMatches;
+            document.getElementById('player1-wins').textContent = h2hData.player1Wins;
+            document.getElementById('player2-wins').textContent = h2hData.player2Wins;
+            document.getElementById('last-meeting').textContent = h2hData.lastMeeting;
+            document.getElementById('longest-win-streak').textContent = h2hData.longestWinStreak;
+            document.getElementById('tournament-meetings').textContent = h2hData.tournamentMeetings;
+
+            // Update labels with player names
+            document.getElementById('player1-wins-label').textContent = `${player1.name} Wins`;
+            document.getElementById('player2-wins-label').textContent = `${player2.name} Wins`;
+            document.getElementById('player1-legend').textContent = `${player1.name} Wins`;
+            document.getElementById('player2-legend').textContent = `${player2.name} Wins`;
+
+            // Update win/loss chart
+            if (h2hData.totalMatches > 0) {
+                const player1WinPercent = (h2hData.player1Wins / h2hData.totalMatches) * 100;
+                const player2WinPercent = (h2hData.player2Wins / h2hData.totalMatches) * 100;
+                
+                document.getElementById('player1-wins-bar').style.width = `${player1WinPercent}%`;
+                document.getElementById('player2-wins-bar').style.width = `${player2WinPercent}%`;
+            } else {
+                document.getElementById('player1-wins-bar').style.width = '0%';
+                document.getElementById('player2-wins-bar').style.width = '0%';
+            }
+        }
+
+        // Initialize with first two players by default
+        if (players.length >= 2) {
+            player1Select.value = players[0].id;
+            player2Select.value = players[1].id;
+            comparePlayers(players[0].id, players[1].id);
+        }
+    </script>
+</body>
+</html>
